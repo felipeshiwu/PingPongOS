@@ -29,6 +29,8 @@ typedef struct task_t
     int	t_exec;
     int t_process;
     int activ;
+    int exitCode;
+    struct task_t *dependQueue;
 } task_t ;
 
 // estrutura que define um semáforo

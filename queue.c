@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// Projeto 0
+//
+// Aluno: Felipe Shi Iu Wu GRR20157578
+// Sistemas Operacionais - Prof. Carlos Maziero
+//-----------------------------------------------------------------------
+
 #include "queue.h"
 #include <stdio.h>
 
@@ -12,13 +19,13 @@ void queue_append (queue_t **queue, queue_t *elem){
     if(queue == NULL)
         puts("Fila inexistente\n");
     else{									//fila existe
-        if(elem != NULL){							//elemento existe		
-     	    if((elem->prev == NULL) && (elem->next) == NULL){			//elemento não esta em outra fila
-	        if(*queue == NULL){						//inserir elemento em fila vazia
-	            elem->next = elem;
+        if(elem != NULL){							//elemento existe
+	    if((elem->prev == NULL) && (elem->next) == NULL){			//elemento não esta em outra fila
+		if(*queue == NULL){						//inserir elemento em fila vazia
+		    elem->next = elem;
 		    elem->prev = elem;
 		    *queue = elem;
-	    	}else{								//inserir elemento em fila não vazia
+		}else{								//inserir elemento em fila não vazia
 		    elem->prev = (*queue)->prev;
 		    elem->next = *queue;
 		    (*queue)->prev->next = elem;
@@ -52,12 +59,12 @@ queue_t *queue_remove (queue_t **queue, queue_t *elem){
 	    else{								//fila não vazia
 	        aux = *queue;
 	        do{								//procura se o elemento está na fila
-	            if(aux == elem){						//elemento pertence a fila indicada
+		    if(aux == elem){						//elemento pertence a fila indicada
 	               	naFila = 1;
 		        if(aux == aux->next){					//remove elemento único da fila
 		    	    aux->next = NULL;
 		            aux->prev = NULL;
-		    	    *queue = NULL;	
+		    	    *queue = NULL;
 		    	}else{							//remove elemento não único da fila
 		    	    if(*queue == elem)					//verifica se o elemento a ser removido é o primeiro
 		    	        *queue = (*queue)->next;
@@ -110,7 +117,7 @@ void queue_print (char *name, queue_t *queue, void print_elem(void*)){
     printf("%s: [", name);
     if(queue != NULL){								//fila não vazia
         aux = queue;
-	do{		
+	do{
 	    print_elem(aux);
 	    aux = aux->next;
 	    i++;
