@@ -17,8 +17,9 @@ unsigned int systime(){
 }
 
 // tratador do sinal
-void tratador (int signum)
-{
+void tratador (int signum){
+    currentTask->t_process++;
+    tempo++;
     if(currentTask != &dispatcher){
         if(currentTask->quantum != 0){
             currentTask->quantum--;
@@ -26,7 +27,6 @@ void tratador (int signum)
             task_yield();
 	    }
     }
-    tempo++;
 }
 
 void ppos_init(){
@@ -162,21 +162,42 @@ int task_switch(task_t *task){
     return(-1);
 }
 
+void wakeupQueue (){
+    if (sleepQueue != NULL){
+        task_t *aux, *next_a;
+        aux = sleepQueue;
+        do{
+	        if((aux->wakeup) <= systime()){
+                next_a = aux->next;
+                aux->status = 1;
+                queue_append((queue_t **)&readyQueue, queue_remove((queue_t **) &sleepQueue, (queue_t *) aux));
+                aux = next_a;
+            }
+            else
+                aux = aux->next;
+        }while((aux!=sleepQueue) && (sleepQueue != NULL));
+    }
+}
+
 // dispatcher é uma tarefa
 void dispatcher_body (){     
     #ifdef DEBUG
         printf("dispatcher_body: mudou para o dispatcher");
     #endif
     task_t *next;
-    while ( ((queue_t *) readyQueue) > 0 ){
-	    next = scheduler() ;  // scheduler é uma função
-	    if (next){
-	        queue_remove((queue_t **) &readyQueue, (queue_t *) next);
-	        init_process = systime();
-	        task_switch (next) ; // transfere controle para a tarefa "next"
-	        if (next->status == 0)
-		        free(next->taskContext.uc_stack.ss_sp);
-	    }
+    while (( ((queue_t *) readyQueue) != NULL ) || ((queue_t *) sleepQueue) != NULL ){
+        if((queue_t *) readyQueue != NULL){
+	        next = scheduler() ;  // scheduler é uma função
+	        if (next){
+	            queue_remove((queue_t **) &readyQueue, (queue_t *) next);
+	            init_process = systime();
+	            task_switch (next) ; // transfere controle para a tarefa "next"
+	            if (next->status == 0)
+		            free(next->taskContext.uc_stack.ss_sp);
+	        }
+        }
+        if((queue_t *) sleepQueue != NULL)
+            wakeupQueue(); 
     }
     task_exit(0) ; // encerra a tarefa dispatcher
 }
@@ -242,11 +263,18 @@ int task_getprio (task_t *task){
 
 // coloca a tarefa como dependente
 int task_join (task_t *task){
-    if(task != NULL){
+    if((task != NULL) && (task->status != 0)){
 	    currentTask->status = 2;    //0 - finalizada 1-pronta 2 - suspensa
         queue_append((queue_t **)&task->dependQueue, (queue_t *)currentTask);
         task_switch(&dispatcher);
         return(currentTask->exitCode);
     }
     return (-1);
+}
+
+void task_sleep (int t){
+	currentTask->status = 2;    //0 - finalizada 1-pronta 2 - suspensa
+    currentTask->wakeup = systime() + t*1000;
+    queue_append((queue_t **)&sleepQueue, (queue_t *)currentTask);
+    task_switch(&dispatcher);
 }
