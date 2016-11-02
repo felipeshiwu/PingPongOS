@@ -278,3 +278,47 @@ void task_sleep (int t){
     queue_append((queue_t **)&sleepQueue, (queue_t *)currentTask);
     task_switch(&dispatcher);
 }
+
+int sem_create (semaphore_t *s, int value){
+    s->semaphoreQueue = NULL;
+    s->semaphoreValue = value;
+    if(s->semaphoreValue == value)
+        return 0;
+    return -1;
+}
+
+int sem_down (semaphore_t *s){
+	if(s == NULL){
+        return(-1);
+    }else if(s->semaphoreValue < 0){
+        currentTask->status = 2;    //0 - finalizada 1-pronta 2 - suspensa
+        queue_append((queue_t **)&s->semaphoreQueue, (queue_t *)currentTask);
+        task_switch(&dispatcher);
+    }else
+        s->semaphoreValue--;
+    return(0);
+}
+
+int sem_up (semaphore_t *s){
+	if(s == NULL){
+        return(-1);
+    }else if(s->semaphoreQueue == NULL){
+        s->semaphoreValue++;
+    }else{
+        task_t *aux = s->semaphoreQueue;
+	    queue_append((queue_t **)&readyQueue, queue_remove((queue_t **) &s->semaphoreQueue, (queue_t *) aux));
+    }
+    return(0);
+
+}
+
+int sem_destroy (semaphore_t *s){
+    task_t *aux;
+    while ( (s->semaphoreQueue) != NULL ){
+        aux = s->semaphoreQueue->next;
+	    queue_append((queue_t **)&readyQueue, queue_remove((queue_t **) &s->semaphoreQueue, (queue_t *) aux));
+    }
+    if (s->semaphoreQueue == NULL)
+        return 0;
+    return -1;
+}
