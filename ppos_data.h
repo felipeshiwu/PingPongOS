@@ -20,6 +20,9 @@ typedef struct task_t
     struct task_t *prev, *next;
     int tid;
     ucontext_t taskContext;
+    int estatico;
+    int dinamico;
+    int status;
 } task_t ;
 
 // estrutura que define um semáforo
@@ -46,8 +49,8 @@ typedef struct
   // preencher quando for necessário
 } mqueue_t ;
 
-task_t taskMain;
-task_t *currentTask;
+task_t taskMain, dispatcher;
+task_t *currentTask, *readyQueue;
 int taskId;
 
 #endif
