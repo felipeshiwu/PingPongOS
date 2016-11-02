@@ -37,7 +37,8 @@ typedef struct task_t
 // estrutura que define um semáforo
 typedef struct
 {
-  // preencher quando for necessário
+    task_t *semaphoreQueue;
+    int semaphoreValue;
 } semaphore_t ;
 
 // estrutura que define um mutex
