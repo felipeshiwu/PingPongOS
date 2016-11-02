@@ -10,6 +10,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ucontext.h>
+#include <signal.h>
+#include <sys/time.h>
 
 #define STACKSIZE 32768	    /* tamanho de pilha das threads */
 
@@ -23,6 +25,10 @@ typedef struct task_t
     int estatico;
     int dinamico;
     int status;
+    int quantum;
+    int	t_exec;
+    int t_process;
+    int activ;
 } task_t ;
 
 // estrutura que define um semáforo
@@ -52,5 +58,6 @@ typedef struct
 task_t taskMain, dispatcher;
 task_t *currentTask, *readyQueue;
 int taskId;
+int tempo, init_process, end_process;
 
 #endif
