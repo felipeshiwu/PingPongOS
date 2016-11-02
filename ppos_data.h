@@ -30,6 +30,7 @@ typedef struct task_t
     int t_process;
     int activ;
     int exitCode;
+    int wakeup;
     struct task_t *dependQueue;
 } task_t ;
 
@@ -58,7 +59,7 @@ typedef struct
 } mqueue_t ;
 
 task_t taskMain, dispatcher;
-task_t *currentTask, *readyQueue;
+task_t *currentTask, *readyQueue, *sleepQueue;
 int taskId;
 int tempo, init_process, end_process;
 
