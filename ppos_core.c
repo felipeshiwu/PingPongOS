@@ -288,23 +288,22 @@ int sem_create (semaphore_t *s, int value){
 }
 
 int sem_down (semaphore_t *s){
-	if(s == NULL){
+	if(s == NULL)
         return(-1);
-    }else if(s->semaphoreValue < 0){
+    s->semaphoreValue--;
+    if(s->semaphoreValue < 0){
         currentTask->status = 2;    //0 - finalizada 1-pronta 2 - suspensa
         queue_append((queue_t **)&s->semaphoreQueue, (queue_t *)currentTask);
         task_switch(&dispatcher);
-    }else
-        s->semaphoreValue--;
+    }
     return(0);
 }
 
 int sem_up (semaphore_t *s){
-	if(s == NULL){
+	if(s == NULL)
         return(-1);
-    }else if(s->semaphoreQueue == NULL){
-        s->semaphoreValue++;
-    }else{
+    s->semaphoreValue++;
+    if(s->semaphoreQueue != NULL){
         task_t *aux = s->semaphoreQueue;
 	    queue_append((queue_t **)&readyQueue, queue_remove((queue_t **) &s->semaphoreQueue, (queue_t *) aux));
     }
