@@ -60,6 +60,12 @@ int main (int argc, char *argv[])
     task_create (&c1, consumidor, "                      c1") ;
     task_create (&c2, consumidor, "                      c2") ;
 
+    task_join (&p1);
+    task_join (&p2);
+    task_join (&p3);
+    task_join (&c1);
+    task_join (&c2);
+
     sem_destroy (&s_buffer);
     sem_destroy (&s_item);
     sem_destroy (&s_vaga);
