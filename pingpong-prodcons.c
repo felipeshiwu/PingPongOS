@@ -70,8 +70,6 @@ int main (int argc, char *argv[])
     sem_destroy (&s_item);
     sem_destroy (&s_vaga);
 
-    task_yield () ;
-
     printf ("Main FIM\n");
     task_exit (0) ;
     exit (0) ;
