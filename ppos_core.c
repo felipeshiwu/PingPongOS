@@ -180,7 +180,7 @@ void wakeupQueue (){
 }
 
 // dispatcher é uma tarefa
-void dispatcher_body (){     
+void dispatcher_body (){
     #ifdef DEBUG
         printf("dispatcher_body: mudou para o dispatcher");
     #endif
@@ -197,7 +197,7 @@ void dispatcher_body (){
 	        }
         }
         if((queue_t *) sleepQueue != NULL)
-            wakeupQueue(); 
+            wakeupQueue();
     }
     task_exit(0) ; // encerra a tarefa dispatcher
 }
@@ -264,7 +264,7 @@ int task_getprio (task_t *task){
 // coloca a tarefa como dependente
 int task_join (task_t *task){
     if((task != NULL) && (task->status != 0)){
-	    currentTask->status = 2;    //0 - finalizada 1-pronta 2 - suspensa
+	    currentTask->status = 2;    //0- finalizada 1- pronta 2- suspensa
         queue_append((queue_t **)&task->dependQueue, (queue_t *)currentTask);
         task_switch(&dispatcher);
         return(currentTask->exitCode);
