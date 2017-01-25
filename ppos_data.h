@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <ucontext.h>
 #include <signal.h>
 #include <sys/time.h>
@@ -56,9 +57,9 @@ typedef struct
 // estrutura que define uma fila de mensagens
 typedef struct
 {
-    double *msgQueue;
-    int max_msgs;
-    int msg_size;
+    void *msgQueue;
+    int max_msgs, msg_size;
+    int first, last, msg_cont;
     semaphore_t s_buffer, s_item, s_vcny;
 } mqueue_t ;
 
