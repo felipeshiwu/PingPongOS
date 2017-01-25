@@ -321,3 +321,83 @@ int sem_destroy (semaphore_t *s){
         return 0;
     return -1;
 }
+
+int item;
+int buffer[5];
+task_t p1, p2, p3, c1, c2;
+int last = -1, first = 0;
+
+int mqueue_create (mqueue_t *queue, int max_msgs, int msg_size){
+    if (!queue)
+        return -1;
+    queue->msg_size = msg_size;
+    sem_create (&s_buffer, 1) ;
+    sem_create (&s_item, 0) ;
+    sem_create (&s_vaga, max_msgs) ;
+    return 0;
+}
+
+int mqueue_send (mqueue_t *queue, void *msg){
+    sem_down (&s_vcny);
+    sem_down (&s_buffer);
+
+    queue_append((mqueue_t **) &queue->msgQueue, (void *) msg));
+
+    sem_up (&s_buffer);
+    sem_up (&s_item);
+
+}
+
+int mqueue_recv (mqueue_t *queue, void *msg){
+    sem_down (&s_item);
+    sem_down (&s_buffer);
+
+    queue_remove((queue_t **) &queue->msgQueue, (void *) msg);
+
+    sem_up (&s_buffer);
+    sem_up (&s_vcny);
+
+}
+
+int mqueue_destroy (mqueue_t *queue){
+
+
+}
+
+int mqueue_msgs (mqueue_t *queue){
+
+
+}
+
+
+int main (int argc, char *argv[])
+{
+    srand(time(NULL));
+    printf ("Main INICIO\n");
+
+    ppos_init () ;
+
+    sem_create (&s_buffer, 1) ;
+    sem_create (&s_item, 0) ;
+    sem_create (&s_vaga, 5) ;
+
+    task_create (&p1, produtor, "p1") ;
+    task_create (&p2, produtor, "p2") ;
+    task_create (&p3, produtor, "p3") ;
+    task_create (&c1, consumidor, "                      c1") ;
+    task_create (&c2, consumidor, "                      c2") ;
+
+    task_join (&p1);
+    task_join (&p2);
+    task_join (&p3);
+    task_join (&c1);
+    task_join (&c2);
+
+    sem_destroy (&s_buffer);
+    sem_destroy (&s_item);
+    sem_destroy (&s_vaga);
+
+    printf ("Main FIM\n");
+    task_exit (0) ;
+    exit (0) ;
+}
