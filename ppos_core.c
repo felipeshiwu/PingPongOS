@@ -323,7 +323,7 @@ int sem_destroy (semaphore_t *s){
 }
 
 int mqueue_create (mqueue_t *queue, int max_msgs, int msg_size){
-    if (queue->msgQueue = malloc ((max_msgs) * sizeof (msg_size))){
+    if (queue->msgQueue = malloc (max_msgs * msg_size)){
         queue->max_msgs = max_msgs;
         queue->msg_size = msg_size;
         sem_create (&queue->s_buffer, 1);
@@ -343,7 +343,7 @@ int mqueue_send (mqueue_t *queue, void *msg){
         sem_down (&queue->s_buffer);
 
         queue->last = (queue->last + 1) % queue->max_msgs;
-        memcpy(msg, queue->msgQueue[queue->last], queue->msg_size);
+        memcpy(queue->msgQueue + (queue->last) * (queue->msg_size), msg, queue->msg_size);
         queue->msg_cont++;
 
         sem_up (&queue->s_buffer);
@@ -359,7 +359,7 @@ int mqueue_recv (mqueue_t *queue, void *msg){
         sem_down (&queue->s_item);
         sem_down (&queue->s_buffer);
 
-        msg = queue->msgQueue[queue->first];
+        memcpy(msg, queue->msgQueue + (queue->first) * (queue->msg_size), queue->msg_size);
         queue->first = (queue->first + 1) % queue->max_msgs;
         queue->msg_cont--;
 
