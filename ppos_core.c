@@ -323,7 +323,7 @@ int sem_destroy (semaphore_t *s){
 }
 
 int mqueue_create (mqueue_t *queue, int max_msgs, int msg_size){
-    if (queue->msgQueue = malloc (max_msgs * msg_size)){
+    if ((queue->msgQueue = malloc (max_msgs * msg_size))){
         queue->max_msgs = max_msgs;
         queue->msg_size = msg_size;
         sem_create (&queue->s_buffer, 1);
