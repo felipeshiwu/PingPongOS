@@ -332,13 +332,14 @@ int mqueue_create (mqueue_t *queue, int max_msgs, int msg_size){
         queue->last = -1;
         queue->first = 0;
         queue->msg_cont = 0;
+        queue->valid = 1;
         return 0;
     }
     return -1;
 }
 
 int mqueue_send (mqueue_t *queue, void *msg){
-    if (msg && queue){
+    if (msg && (queue->valid == 1)){
         sem_down (&queue->s_vcny);
         sem_down (&queue->s_buffer);
 
@@ -355,7 +356,7 @@ int mqueue_send (mqueue_t *queue, void *msg){
 }
 
 int mqueue_recv (mqueue_t *queue, void *msg){
-    if (queue){
+    if (queue->valid == 1){
         sem_down (&queue->s_item);
         sem_down (&queue->s_buffer);
 
@@ -376,7 +377,7 @@ int mqueue_destroy (mqueue_t *queue){
         sem_destroy (&queue->s_buffer);
         sem_destroy (&queue->s_item);
         sem_destroy (&queue->s_vcny);
-        free (queue->msgQueue);
+        queue->valid = 0;
         return 0;
     }
     return -1;

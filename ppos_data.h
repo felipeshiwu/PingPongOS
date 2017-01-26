@@ -58,7 +58,7 @@ typedef struct
 typedef struct
 {
     void *msgQueue;
-    int max_msgs, msg_size;
+    int max_msgs, msg_size, valid;
     int first, last, msg_cont;
     semaphore_t s_buffer, s_item, s_vcny;
 } mqueue_t ;
