@@ -1,16 +1,16 @@
 # Ping Pong O.S.
 
-Projeto da diciplica de Sistemas Operacionais do professor Carlos Maziero da UFPR.
+Project of the Operation Systems course by Professor Carlos Maziero from UFPR.
 
-## Apresentação
+## Preview
 
-Com o objetivo de entender as funcionalidades de um sistema operacional, fomos submetidos a uma sequencia de projetinhos, cada projeto apresenta uma competencia do sistema.
+To understand the functionalities of an operating system, we were subjected to a sequence of small projects, each project has a competence of a simple operation system.
 
-## Pre requisitos 
+## Prerequisites
 
-Makefile é necessário
+Makefile is required.
 
-### Instalação
+### Install
 
 ```
 sudo apt install make
